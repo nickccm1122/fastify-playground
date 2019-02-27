@@ -1,27 +1,30 @@
 'use strict'
 
-const fastify = require('fastify')
+// Require the framework
+const Fastify = require('fastify')
 
-;(async function main() {
-  try {
-    const app = await require('./app')(
-      fastify({
-        logger: true,
-        prefix: '/v1'
-      })
-    )
+// Instantiate Fastify with some config
+const app = Fastify({
+  logger: {
+    level: 'debug',
+    prettyPrint: true
+  },
+  pluginTimeout: 10000
+})
 
-    // Run the server!
-    app.listen(3000, function(err, address) {
-      if (err) {
-        app.log.error(err)
-        process.exit(1)
-      }
-      app.log.info(`server listening on ${address}`)
+// Register your application as a normal plugin.
+app.register(require('./app.js'), {
+  prefix: '/v1'
+})
 
-      app.log.info(app.printRoutes())
-    })
-  } catch (err) {
-    // handle error
+// Start listening.
+app.listen(process.env.PORT || 3000, (err, address) => {
+  if (err) {
+    app.log.error(err)
+    process.exit(1)
   }
-})()
+
+  app.log.info(`server listening on ${address}`)
+
+  app.log.info(app.printRoutes())
+})

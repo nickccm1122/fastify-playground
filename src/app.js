@@ -2,7 +2,7 @@
 
 module.exports = async function(fastify, options) {
   fastify.register(require('./plugins/dbConnector'), {
-    url: 'mongodb://localhost:27017/'
+    url: 'mongodb://localhost:27017/fastify-playground'
   })
 
   // `after` will be executed once

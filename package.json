@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "dev": "fastify start src/app.js --watch -P -l debug",
+    "dev": "nodemon $npm_package_main",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,7 +16,6 @@
     "mongodb": "^3.1.13"
   },
   "devDependencies": {
-    "fastify-cli": "^1.0.0",
     "nodemon": "^1.18.10"
   }
 }
