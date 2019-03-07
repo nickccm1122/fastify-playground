@@ -1,9 +1,32 @@
 'use strict'
 
+const TodoService = require('./services/todos')
+const TodoRepo = require('./repositories/todoRepo')
+
 module.exports = async function(fastify, options) {
+
+  fastify.register(require('./plugins/utils'))
+
   fastify.register(require('./plugins/dbConnector'), {
     url: 'mongodb://localhost:27017/fastify-playground'
   })
+
+  fastify.decorate(
+    'authenticationMiddleware',
+    require('./middlewares/authnMiddleware')
+  )
+
+  fastify.decorate(
+    'authorizationMiddleware',
+    require('./middlewares/authzMiddleware')
+  )
+
+  fastify.decorate(
+    'todoServiceV1',
+    new TodoService({
+      todoRepo: new TodoRepo()
+    })
+  )
 
   // `after` will be executed once
   // the previous declared `register` has finished
@@ -29,11 +52,11 @@ module.exports = async function(fastify, options) {
    *
    * Questions: Is it async?
    */
-  fastify.register(require('./services/todos'))
+  fastify.register(require('./routes/admin'))
 
-  fastify.register(require('./services/users'))
+  // fastify.register(require('./routes/users'))
 
-  fastify.register(require('./services/demo'))
+  // fastify.register(require('./routes/demo'))
 
   return fastify
 }

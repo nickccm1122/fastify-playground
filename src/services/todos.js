@@ -1,30 +1,30 @@
 'use strict'
 
-async function routes(fastify, options) {
-  const database = fastify.mongo.db('db')
-  const collection = database.collection('test')
+class TodoService {
+  // There should be ways to state the contract of todoRepo
+  constructor({ todoRepo }) {
+    this.todoRepo = todoRepo
+  }
 
-  fastify.get('/todos/healthcheck', async (request, reply) => {
-    return { hello: 'healthcheck version (default version)' }
-  })
+  async getAllTodos(user) {
+    const data = this.todoRepo.getAllTodos(user)
+    return data
+  }
 
-  fastify.get(
-    '/todos/healthcheck',
-    { version: '1.3.0' },
-    async (request, reply) => {
-      return { hello: 'healthcheck version 1.3.0' }
-    }
-  )
+  async getTodo(id, user) {
+    const data = this.todoRepo.getTodo(id, user)
+    return data
+  }
 
-  fastify.get('/todos/search/:id', async (request, reply) => {
-    const result = await collection.findOne({ id: request.params.id })
+  async addTodo(todo, user) {
+    const data = this.todoRepo.addTodo(todo, user)
+    return data
+  }
 
-    if (result === null || result.value === null) {
-      throw new Error('Invalid value')
-    }
-
-    return result.value
-  })
+  async removeTodo(id, user) {
+    const data = this.todoRepo.removeTodo(id, user)
+    return data
+  }
 }
 
-module.exports = routes
+module.exports = TodoService
